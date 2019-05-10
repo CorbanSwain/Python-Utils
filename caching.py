@@ -5,6 +5,7 @@ import os
 import functools
 import pickle
 import copy
+from hashlib import blake2b
 from c_swain_python_utils.files import make_str_filesafe, touchdir
 from c_swain_python_utils.dicts import sort_dict
 
@@ -26,11 +27,17 @@ def save_to_disk(obj, file_path):
         pickle.dump(obj, cache_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+def quick_hash(string):
+    h = blake2b(digest_size=25)
+    h.update(string.encode(encoding='UTF-8', errors='strict'))
+    return h.hexdigest()
+
+
 def disk_cache(cache_dir):
     def disk_cache_decorator(func):
         @functools.wraps(func)
         def func_wrapper(*args, **kwargs):
-            input_str = make_str_filesafe(repr((args, sort_dict(kwargs))))
+            input_str = quick_hash(repr((args, sort_dict(kwargs))))
             save_dir = os.path.join(cache_dir,
                                     make_str_filesafe(func.__name__))
             touchdir(save_dir)
@@ -38,10 +45,14 @@ def disk_cache(cache_dir):
             try:
                 output = load_from_disk(full_path)
             except FileNotFoundError:
+                do_calculate_output = True
+            else:
+                do_calculate_output = False
+
+            if do_calculate_output:
                 output = func(*args, **kwargs)
                 save_to_disk(output, full_path)
-            finally:
-                return output
+            return output
         return func_wrapper
     return disk_cache_decorator
 
@@ -53,7 +64,7 @@ def cache(func):
     @functools.wraps(func)
     def func_wrapper(*args, **kwargs):
         global mem_cache
-        input_str = repr((args, sort_dict(kwargs)))
+        input_str = quick_hash(repr((args, sort_dict(kwargs))))
         try:
             func_dict = mem_cache[func.__name__]
         except KeyError:
@@ -62,9 +73,13 @@ def cache(func):
         try:
             output = func_dict[input_str]
         except KeyError:
+            do_calculate_output = True
+        else:
+            do_calculate_output = False
+
+        if do_calculate_output:
             output = func_dict[input_str] = func(*args, **kwargs)
-        finally:
-            return output
+        return output
     return func_wrapper
 
 
