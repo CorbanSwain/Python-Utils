@@ -5,13 +5,7 @@ import os
 import functools
 import pickle
 import copy
-
-try:
-    from hashlib import blake2b as hash_method
-except ImportError:
-    from hashlib import md5 as hash_method
-
-
+import hashlib
 from c_swain_python_utils.files import make_str_filesafe, touchdir
 from c_swain_python_utils.dicts import sort_dict
 
@@ -34,7 +28,7 @@ def save_to_disk(obj, file_path):
 
 
 def quick_hash(string):
-    h = hash_method(digest_size=25)
+    h = hashlib.md5()
     h.update(string.encode(encoding='UTF-8', errors='strict'))
     return h.hexdigest()
 
