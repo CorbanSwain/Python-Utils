@@ -29,6 +29,11 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf'):
     if figs is None:
         figs = [plt.figure(n) for n in plt.get_fignums()]
 
+    try:
+        _ = iter(figs)
+    except TypeError:
+        figs = [figs, ]
+
     file_path = os.path.join('figures', filename)
     if fmt == 'pdf':
         file_path += '.pdf'
