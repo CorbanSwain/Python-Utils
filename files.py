@@ -3,7 +3,11 @@
 
 import os
 
-__all__ = ['touchdir', 'make_str_filesafe']
+__all__ = ['get_filepath', 'touchdir', 'make_str_filesafe']
+
+
+def get_filepath(fle):
+    return os.path.dirname(os.path.abspath(fle))
 
 
 def touchdir(pth, recur=True):

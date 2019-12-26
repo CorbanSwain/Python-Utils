@@ -13,11 +13,11 @@ from matplotlib.backends.backend_pdf import PdfPages
 __all__ = ['despine', 'despine_all', 'save_figures', 'set_mpl_defaults']
 
 
-def despine_all(ax):
+def despine_all(ax: plt.Axes):
     despine(ax, **{pos: True for pos in ('left', 'right', 'top', 'bottom')})
 
 
-def despine(ax, **kwargs):
+def despine(ax: plt.Axes, **kwargs):
     [ax.spines[k].set_visible(not v) for k, v in kwargs.items()]
 
 
@@ -28,11 +28,11 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf'):
 
     if figs is None:
         figs = [plt.figure(n) for n in plt.get_fignums()]
-
-    try:
-        _ = iter(figs)
-    except TypeError:
-        figs = [figs, ]
+    else:
+        try:
+            _ = iter(figs)
+        except TypeError:
+            figs = [figs, ]
 
     file_path = os.path.join('figures', filename)
     if fmt == 'pdf':

@@ -1,0 +1,6 @@
+name: csutils-env
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
