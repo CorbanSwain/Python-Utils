@@ -21,7 +21,7 @@ def despine(ax: plt.Axes, **kwargs):
     [ax.spines[k].set_visible(not v) for k, v in kwargs.items()]
 
 
-def save_figures(filename=None, figs=None, dpi=200, fmt='pdf'):
+def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
     if filename is None:
         filename = 'all_figures'
     filename = filename + '_' + time.strftime('%y%m%d-%H%M')
@@ -34,7 +34,8 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf'):
         except TypeError:
             figs = [figs, ]
 
-    file_path = os.path.join('figures', filename)
+    directory = 'figures' if directory is None else directory
+    file_path = os.path.join(directory, filename)
     if fmt == 'pdf':
         file_path += '.pdf'
         with PdfPages(file_path) as pp:
