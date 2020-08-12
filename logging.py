@@ -7,9 +7,13 @@ import sys
 __all__ = ['get_logger']
 
 
-def get_logger(name=None, level=None, filepath=None):
-    level = level or logging.DEBUG
-    filepath = filepath or 'log.log'
+def get_logger(name: str = None,
+               level: int = None,
+               filepath: str = None):
+    """creates a `logging.Logger` object"""
+
+    level = level if level is not None else logging.DEBUG
+    filepath = filepath if filepath is not None else 'log.log'
     logging.getLogger().setLevel(level)
     logger = logging.getLogger(name)
 

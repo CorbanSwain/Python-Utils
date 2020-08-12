@@ -47,7 +47,6 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
 
 
 def set_mpl_defaults():
-    mpl.rcdefaults()
     tex_preamble = r'''
     \usepackage{sansmathfonts}
     \usepackage{helvet}
