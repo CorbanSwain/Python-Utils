@@ -70,6 +70,7 @@ def cache(func):
         except KeyError:
             mem_cache[func.__name__] = {}
             func_dict = mem_cache[func.__name__]
+
         try:
             output = func_dict[input_str]
         except KeyError:
