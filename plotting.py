@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 from matplotlib.backends.backend_pdf import PdfPages
+import c_swain_python_utils as csutils
 
 __all__ = ['despine', 'despine_all', 'save_figures', 'set_mpl_defaults']
 
@@ -21,10 +22,13 @@ def despine(ax: plt.Axes, **kwargs):
     [ax.spines[k].set_visible(not v) for k, v in kwargs.items()]
 
 
-def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
+def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None,
+                 add_timestamp=True):
     if filename is None:
         filename = 'all_figures'
-    filename = filename + '_' + time.strftime('%y%m%d-%H%M')
+
+    if add_timestamp:
+        filename = filename + '_' + time.strftime('%y%m%d-%H%M')
 
     if figs is None:
         figs = [plt.figure(n) for n in plt.get_fignums()]
@@ -35,6 +39,7 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
             figs = [figs, ]
 
     directory = 'figures' if directory is None else directory
+    csutils.touchdir(directory)
     file_path = os.path.join(directory, filename)
     if fmt == 'pdf':
         file_path += '.pdf'
