@@ -9,9 +9,11 @@ import matplotlib.pyplot as plt
 import os
 import time
 from matplotlib.backends.backend_pdf import PdfPages
-from c_swain_python_utils.files import *
+import c_swain_python_utils as csutils
 
-__all__ = ['despine', 'despine_all', 'save_figures', 'set_mpl_defaults']
+
+__all__ = ['despine', 'despine_all', 'save_figures', 'set_mpl_defaults',
+           'stamp_fig']
 
 
 def despine_all(ax: plt.Axes):
@@ -22,10 +24,32 @@ def despine(ax: plt.Axes, **kwargs):
     [ax.spines[k].set_visible(not v) for k, v in kwargs.items()]
 
 
-def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
+def stamp_fig(fig, stamp_str='figure %n | %d', **kwargs):
+    replace_dict = {
+        '%n': f'{fig.number:d}',
+        '%d': time.strftime('%y%m%d-%H%M')}
+
+    full_stamp_str = stamp_str
+
+    for r in replace_dict.items():
+        full_stamp_str = full_stamp_str.replace(*r)
+
+    plt.figure(fig.number)
+    plt.annotate(full_stamp_str, (0.99, 0.01),
+                 xycoords='figure fraction',
+                 fontsize='x-small',
+                 ha='right',
+                 va='bottom',
+                 **kwargs)
+
+
+def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None,
+                 add_filename_timestamp=True, stamp_kwargs=None):
     if filename is None:
         filename = 'all_figures'
-    filename = filename + '_' + time.strftime('%y%m%d-%H%M')
+
+    if add_filename_timestamp:
+        filename = filename + '_' + time.strftime('%y%m%d-%H%M')
 
     if figs is None:
         figs = [plt.figure(n) for n in plt.get_fignums()]
@@ -35,8 +59,12 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None):
         except TypeError:
             figs = [figs, ]
 
+    if stamp_kwargs:
+        [stamp_fig(fig, **stamp_kwargs) for fig in figs]
+
     directory = 'figures' if directory is None else directory
-    touchdir(directory)
+    csutils.touchdir(directory)
+
     file_path = os.path.join(directory, filename)
     if fmt == 'pdf':
         file_path += '.pdf'
