@@ -19,12 +19,12 @@ def get_logger(name: str = None,
 
     # Create handlers
     c_handler = logging.StreamHandler(sys.stdout)
-    f_handler = logging.FileHandler(filepath)
+    f_handler = logging.FileHandler(filepath, encoding='utf8')
     c_handler.setLevel(level)
     f_handler.setLevel(level)
 
     # Create formatters and add it to handlers
-    c_format = logging.Formatter('%(name)10s : %(levelname)10s : %(message)s')
+    c_format = logging.Formatter(u'%(name)10s : %(levelname)10s : %(message)s')
     f_format = logging.Formatter(
         '%(asctime)s | %(name)10s | %(levelname)10s : %(message)s')
     c_handler.setFormatter(c_format)
