@@ -13,3 +13,5 @@ from c_swain_python_utils.plotting import *
 from c_swain_python_utils.strings import *
 from c_swain_python_utils.numerics import *
 from c_swain_python_utils.xml import *
+from c_swain_python_utils.yaml import *
+from c_swain_python_utils.numpy import *

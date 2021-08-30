@@ -78,6 +78,7 @@ class XML(Element):
                     recursive=True,
                     indent_str=indent_str,
                     logger=logger,
+                    line_len_limit=line_len_limit,
                     _level=(_level + 1))
 
                 if child_limit:
@@ -88,7 +89,4 @@ class XML(Element):
 
     def find(self, *args, **kwargs):
         return self.__class__(self.root.find(*args, **kwargs))
-
-    def findall(self, *args, **kwargs):
-        return self.__class__(self.root.findall(*args, **kwargs))
 

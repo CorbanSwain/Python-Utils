@@ -8,9 +8,10 @@ import copy
 import hashlib
 from c_swain_python_utils.files import make_str_filesafe, touchdir
 from c_swain_python_utils.dicts import sort_dict
+from c_swain_python_utils.meta import get_full_func_name
 
 __all__ = ['load_from_disk', 'save_to_disk', 'disk_cache', 'cache',
-           'cache_yield_copy', 'clear_cache']
+           'cache_yield_copy', 'clear_cache', 'cached_property']
 
 
 def load_from_disk(file_path):
@@ -38,8 +39,9 @@ def disk_cache(cache_dir):
         @functools.wraps(func)
         def func_wrapper(*args, **kwargs):
             input_str = quick_hash(repr((args, sort_dict(kwargs))))
+            func_name = get_full_func_name(func)
             save_dir = os.path.join(cache_dir,
-                                    make_str_filesafe(func.__name__))
+                                    make_str_filesafe(func_name))
             touchdir(save_dir)
             full_path = os.path.join(save_dir, input_str)
             try:
@@ -65,11 +67,12 @@ def cache(func):
     def func_wrapper(*args, **kwargs):
         global mem_cache
         input_str = quick_hash(repr((args, sort_dict(kwargs))))
+        func_name = get_full_func_name(func)
         try:
-            func_dict = mem_cache[func.__name__]
+            func_dict = mem_cache[func_name]
         except KeyError:
-            mem_cache[func.__name__] = {}
-            func_dict = mem_cache[func.__name__]
+            mem_cache[func_name] = {}
+            func_dict = mem_cache[func_name]
 
         try:
             output = func_dict[input_str]
@@ -90,6 +93,26 @@ def cache_yield_copy(func):
         cache_func = cache(func)
         return copy.deepcopy(cache_func(*args, **kwargs))
     return func_wrapper
+
+
+def cached_property(func):
+    @functools.wraps(func)
+    def func_wrapper(self):
+        cache_name = '_' + func.__name__
+        try:
+            property_value = getattr(self, cache_name)
+        except AttributeError:
+            property_value = None
+
+        if property_value is None:
+            # `None` value cannot be cached, function will run each time
+            property_value = func(self)
+            setattr(self, cache_name, property_value)
+            return property_value
+        else:
+            return property_value
+
+    return property(func_wrapper)
 
 
 def clear_cache():
