@@ -4,11 +4,9 @@
 # Project: c_swain_python_utils
 # by Corban Swain 2019
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+
 import os
 import time
-from matplotlib.backends.backend_pdf import PdfPages
 import c_swain_python_utils as csutils
 
 
@@ -16,15 +14,17 @@ __all__ = ['despine', 'despine_all', 'save_figures', 'set_mpl_defaults',
            'stamp_fig']
 
 
-def despine_all(ax: plt.Axes):
+def despine_all(ax):
     despine(ax, **{pos: True for pos in ('left', 'right', 'top', 'bottom')})
 
 
-def despine(ax: plt.Axes, **kwargs):
+def despine(ax, **kwargs):
     [ax.spines[k].set_visible(not v) for k, v in kwargs.items()]
 
 
 def stamp_fig(fig, stamp_str='figure %n | %d', **kwargs):
+    import matplotlib.pyplot as plt
+
     replace_dict = {
         '%n': f'{fig.number:d}',
         '%d': time.strftime('%y%m%d-%H%M')}
@@ -45,6 +45,9 @@ def stamp_fig(fig, stamp_str='figure %n | %d', **kwargs):
 
 def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None,
                  add_filename_timestamp=True, stamp_kwargs=None):
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_pdf import PdfPages
+
     if filename is None:
         filename = 'all_figures'
 
@@ -77,6 +80,8 @@ def save_figures(filename=None, figs=None, dpi=200, fmt='pdf', directory=None,
 
 
 def set_mpl_defaults():
+    import matplotlib as mpl
+
     tex_preamble = r'''
     \usepackage{sansmathfonts}
     \usepackage{helvet}
