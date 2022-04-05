@@ -9,4 +9,6 @@ __all__ = ['zero_center_range']
 
 
 def zero_center_range(length):
-    return np.arange(length) - ((length - 1) / 2)
+    from numpy import arange
+
+    return arange(length) - ((length - 1) / 2)

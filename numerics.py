@@ -1,20 +1,22 @@
 #!/bin/python3
 # numerics.py
 
-import numpy as np
-
 __all__ = ['logical_or', 'logical_and']
 
 
 def logical_or(*args):
+    from numpy import logical_or
+
     return binary_ndarray_reduce(*args,
-                                 binary_fcn=np.logical_or,
+                                 binary_fcn=logical_or,
                                  identity=False)
 
 
 def logical_and(*args):
+    from numpy import logical_and
+
     return binary_ndarray_reduce(*args,
-                                 binary_fcn=np.logical_and,
+                                 binary_fcn=logical_and,
                                  identity=True)
 
 
