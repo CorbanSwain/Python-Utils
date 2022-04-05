@@ -3,8 +3,6 @@
 
 # Corban Swain, 2021
 
-import numpy as np
-
 __all__ = ['zero_center_range']
 
 
