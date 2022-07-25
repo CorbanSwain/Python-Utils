@@ -4,7 +4,7 @@
 # Project: c_swain_python_utils
 # by Corban Swain 2019
 
-from c_swain_python_utils.logging import *
+from c_swain_python_utils.logs import *
 from c_swain_python_utils.files import *
 from c_swain_python_utils.caching import *
 from c_swain_python_utils.timing import *

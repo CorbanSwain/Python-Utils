@@ -3,7 +3,13 @@
 
 import os
 
-__all__ = ['get_filepath', 'touchdir', 'make_str_filesafe']
+__all__ = ['get_filepath', 'touchdir', 'make_str_filesafe',
+           'no_ext_basename']
+
+
+def no_ext_basename(f, extension_sep='.'):
+    xtns = extension_sep
+    return xtns.join(os.path.basename(f).split(xtns)[:-1])
 
 
 def get_filepath(fle):
