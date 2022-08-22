@@ -3,7 +3,7 @@
 
 import os
 
-__all__ = ['touchdir', 'make_str_filesafe']
+__all__ = ['touchdir', 'make_str_filesafe', 'get_file_dir']
 
 
 def touchdir(pth, recur=True):
@@ -35,3 +35,7 @@ def make_str_filesafe(string):
     for a, b in filesafe_replacements:
         string = string.replace(a, b)
     return string
+
+
+def get_file_dir(file_path):
+    return os.path.realpath(os.path.dirname(file_path))
