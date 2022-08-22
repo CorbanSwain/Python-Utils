@@ -3,7 +3,18 @@
 
 import os
 
-__all__ = ['touchdir', 'make_str_filesafe', 'get_file_dir']
+__all__ = ['get_filepath', 'touchdir', 'make_str_filesafe',
+           'no_ext_basename', 'get_file_dir']
+
+
+def no_ext_basename(f, extension_sep='.'):
+    xtns = extension_sep
+    return xtns.join(os.path.basename(f).split(xtns)[:-1])
+
+
+def get_filepath(fle):
+    """deprecated, do not use"""
+    return os.path.dirname(os.path.abspath(fle))
 
 
 def touchdir(pth, recur=True):
