@@ -165,14 +165,17 @@ class BraceFormatMessage:
             self.fmt_kwargs = {}
 
     def __str__(self):
-        return self._fmt.format(*self.fmt_args, **self.fmt_kwargs)
+        try:
+            return self._fmt.format(*self.fmt_args, **self.fmt_kwargs)
+        except AttributeError:
+            return str(self._fmt)
 
 
 class BraceStyleAdapter(logging.LoggerAdapter):
     def __init__(self, logger, extra=None):
         super().__init__(logger, {} if extra is None else extra)
 
-    def log(self, level, msg, /, *args, **kwargs):
+    def log(self, level, msg, *args, **kwargs):
         if self.isEnabledFor(level):
             msg, kwargs = self.process(msg, kwargs)
             self.logger._log(level, BraceFormatMessage(msg, args), (), **kwargs)
@@ -190,3 +193,4 @@ if __name__ == '__main__':
     x = 1
     log.info('Here is the value of x, {}', x)
     log.error('It is important to see that this is {ten:f}', {'ten': 10.0})
+    log.info(55)
