@@ -4,17 +4,35 @@
 # Project: c_swain_python_utils
 # by Corban Swain 2019
 
-__all__ = ['sort_dict', ]
+import collections.abc
+
+__all__ = ['sort_dict', 'sort_mapping']
 
 
 def sort_dict(d: dict, *, recursive: bool = False, key=repr) -> dict:
-    if recursive:
-        output_d = dict()
-        for k in sorted(d.keys(), key=key):
-            if isinstance(d[k], dict):
-                output_d[k] = sort_dict(d[k], recursive=True)
-            else:
-                output_d[k] = d[k]
-        return output_d
-    else:
-        return {k: d[k] for k in sorted(d.keys(), key=key)}
+    return sort_mapping(d,
+                        recursive=recursive,
+                        key=key,
+                        recur_on_class=dict)
+
+
+def sort_mapping(d,
+                 *,
+                 recursive: bool = False,
+                 key=repr,
+                 recur_on_class=collections.abc.Mapping):
+
+    output_d = d.__class__()
+    sorted_keys = sorted(d.keys(), key=key)
+
+    for k in sorted_keys:
+        if recursive and isinstance(d[k], recur_on_class):
+            output_d[k] = sort_mapping(d[k],
+                                       recursive=True,
+                                       key=key,
+                                       recur_on_class=recur_on_class)
+        else:
+            output_d[k] = d[k]
+
+    return output_d
+

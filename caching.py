@@ -98,7 +98,7 @@ def cache_yield_copy(func):
 def cached_property(func):
     @functools.wraps(func)
     def func_wrapper(self):
-        cache_name = '_' + func.__name__
+        cache_name = '_' + self.__class__.__name__ + '__' + func.__repr__()
         try:
             property_value = getattr(self, cache_name)
         except AttributeError:
