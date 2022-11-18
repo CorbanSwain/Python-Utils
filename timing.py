@@ -42,7 +42,7 @@ def timed(logger=None):
 
 def log_time_delta(logger, start, msg):
     # TODO - implement log level selection
-    logger.info('{:s} took {:s}'.format(msg, format_seconds(time.time()-start)))
+    logger.debug('{:s} took {:s}'.format(msg, format_seconds(time.time()-start)))
 
 
 def format_seconds(seconds):
