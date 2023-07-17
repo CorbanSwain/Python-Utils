@@ -167,7 +167,7 @@ class BraceFormatMessage:
     def __str__(self):
         try:
             return self._fmt.format(*self.fmt_args, **self.fmt_kwargs)
-        except TypeError as e:
+        except (TypeError, IndexError) as e:
             msg = ('Failed to successfully format the following message for '
                    'logging:\n\t%r.format(*%r, **%r)'
                    % (self._fmt, self.fmt_args, self.fmt_kwargs))
