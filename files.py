@@ -1,19 +1,25 @@
 #!python3
 # files.py
 
+from __future__ import annotations
 import os
+import warnings
 
 __all__ = ['get_filepath', 'touchdir', 'make_str_filesafe',
            'no_ext_basename', 'get_file_dir']
 
 
-def no_ext_basename(f, extension_sep='.'):
-    xtns = extension_sep
-    return xtns.join(os.path.basename(f).split(xtns)[:-1])
+def no_ext_basename(f: bytes | str | os.PathLike,
+                    **kwargs) -> str:
+    if kwargs:
+        warnings.warn('`no_ext_basename` accepts only one argument; use of the '
+                      '`extension_sep` parameter is deprecated.')
+    return os.path.splitext(os.path.basename(f))[0]
 
 
 def get_filepath(fle):
     """deprecated, do not use"""
+    warnings.warn('This function `get_filepath` is deprecated; do not use.')
     return os.path.dirname(os.path.abspath(fle))
 
 

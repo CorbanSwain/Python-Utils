@@ -11,6 +11,8 @@ __all__ = ['get_logger', 'standard_logging_config', 'get_logger_old',
            'apply_standard_logging_config', 'NoIssueFilter',
            'parse_logging_level']
 
+from typing import Mapping, Iterable, Any
+
 
 def get_logger(*args, **kwargs):
     """
@@ -148,33 +150,37 @@ def get_logger_old(name: str = None,
 
 class BraceFormatMessage:
     def __init__(self, fmt, args):
-        self._fmt = fmt
+        self._fmt: Any = fmt
+        self.fmt_args: Iterable = args
+        self.fmt_kwargs: Mapping[str, Any] = dict()
 
-        # Performs a check to see if a single dict-like argument is passed;
+        # performs a check to see if no arguments are passed, in that case
+        # just display the object after conversion to a string
+        if not args:
+            self._fmt = '{:s}'
+            self.fmt_args = (str(fmt), )
+            return
+
+        # performs a check to see if a single dict-like argument is passed;
         # if so, that argument is used to pass keyword args to str.format().
         # Otherwise, only positional arguments can be passed to str.format().
         # Adapted from the implementation in logging.LogRecord.__init__().
-        if (args
-                and len(args) == 1
+        if (len(args) == 1
                 and isinstance(args[0], collections.abc.Mapping)
                 and args[0]):
-            self.fmt_args = ()
+            self.fmt_args = tuple()
             self.fmt_kwargs = args[0]
-        else:
-            self.fmt_args = args
-            self.fmt_kwargs = {}
+            return
 
     def __str__(self):
         try:
             return self._fmt.format(*self.fmt_args, **self.fmt_kwargs)
-        except (TypeError, IndexError) as e:
+        except Exception as e:
             msg = ('Failed to successfully format the following message for '
                    'logging:\n\t%r.format(*%r, **%r)'
                    % (self._fmt, self.fmt_args, self.fmt_kwargs))
             new_e = RuntimeError(msg)
             raise new_e from e
-        except AttributeError:
-            return str(self._fmt)
 
 
 class BraceStyleAdapter(logging.LoggerAdapter):
