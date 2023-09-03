@@ -4,6 +4,8 @@
 # Project: c_swain_python_utils
 # by Corban Swain 2021
 
+from __future__ import annotations
+
 import xml.etree.ElementTree as ElementTree
 from xml.etree.ElementTree import Element
 import copy
@@ -21,9 +23,10 @@ def print_xml(xml_like, **kwargs):
 
 
 class XML(Element):
-    def __init__(self, xml_like):
+    def __init__(self, xml_like: str | Element | XML):
         input_type = type(xml_like)
 
+        self.root: Element
         if input_type is str:
             self.root = load_xml(xml_like)
         elif input_type is Element:
