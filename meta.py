@@ -9,8 +9,10 @@ import inspect
 __all__ = ['get_class_that_defined_method',
            'get_full_func_name']
 
+from typing import Callable
 
-def get_class_that_defined_method(meth):
+
+def get_class_that_defined_method(meth: Callable):
     # https://stackoverflow.com/a/25959545
 
     if isinstance(meth, ft.partial):
@@ -40,7 +42,7 @@ def get_class_that_defined_method(meth):
     return getattr(meth, '__objclass__', None)
 
 
-def get_full_func_name(func):
+def get_full_func_name(func: Callable) -> str:
     cls = get_class_that_defined_method(func)
     if cls:
         cls_str = str(cls).split("'")[1]

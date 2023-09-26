@@ -16,4 +16,5 @@ from c_swain_python_utils.ipy import *
 from c_swain_python_utils.xml import *
 from c_swain_python_utils.yaml import *
 from c_swain_python_utils.numpy import *
+from c_swain_python_utils.meta import *
 
