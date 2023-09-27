@@ -112,6 +112,10 @@ def standard_logging_config(*,
 
         },
     }
+
+    if file_path is None:
+        del _config['handlers']['file']
+
     return _config
 
 
